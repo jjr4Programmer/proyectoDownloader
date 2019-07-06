@@ -1,6 +1,6 @@
 
 #__author__=jjr4p
-#Vista descarga video y audio de youtube con python
+#escarga video y audio de youtube con python
 
 import os
 try:
