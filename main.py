@@ -7,10 +7,3 @@ if __name__ == '__main__':
 	Vista = Downloader(control)
 	control.setVista(Vista)
 	control.iniciar()
-
-
-
-
-
-
-
