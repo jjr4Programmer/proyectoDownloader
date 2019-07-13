@@ -1,5 +1,4 @@
 # proyectoDownloader
-=========================================================
 
 PASOS A SEGUIR PARA USAR EL PROGRAMA:
 
@@ -10,4 +9,4 @@ PASOS A SEGUIR PARA USAR EL PROGRAMA:
 # Recomendaciones
 - Se puede pegar la url haciendo doble click sobre la caja de texto
 - Se puede elegir una carpeta de destino diferente haciendo click sobre los tres puntos
-==========================================================
+
