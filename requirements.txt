@@ -1,4 +1,4 @@
 requests == 2.22.0
 Pillow
 pafy == 0.5.4
-youtube_dlgit 
+youtube_dl

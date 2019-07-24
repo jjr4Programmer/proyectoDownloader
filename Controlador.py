@@ -41,41 +41,46 @@ class Controlador:
         self.vista.bborrar.config(state=DISABLED)
         if platform.system() == 'Windows':
             self.vista.button.config(cursor="wait")
-        t = threading.Thread(target=self.cargarInfo)
-        t.start()
+
+        try:
+            self.recurso = pafy.get_playlist(self.vista.url.get())
+            t = threading.Thread(target=self.cargarPlayList)
+            t.start()
+        except ValueError as e:
+            try:
+                self.recurso = pafy.new(self.vista.url.get())
+                t = threading.Thread(target=self.cargarInfo)
+                t.start()
+            except ValueError as e:
+                mensaje = "La url es inválida o no se encuentra conectado "
+                mensaje += "a internet, intentelo nuevamente."
+                msg.showerror("Error", mensaje)
 
     def cargarInfo(self):
+        self.vista.notebook.select(self.vista.tab1)
         """ Método encargado de obtener información dela url ingresada """
-        try:
-            self.recurso = pafy.new(self.vista.url.get())
-            info = ""
-            info += "■Título: " + self.recurso.title+"\n"
-            info += "■Duración: " + self.recurso.duration+"\n"
-            info += "■Autor: " + self.recurso.author+"\n"
-            info += "■Categoría: " + self.recurso.category+"\n"
-            info += "■Likes: " + str(self.recurso.likes)+"\n"
-            info += "■Dislikes: " + str(self.recurso.dislikes)+"\n"
-            mejor = self.recurso.getbest()
-            info += "■Mejor resolución: " + mejor.resolution+"\n"
-            info += "■Mejor formato: " + mejor.extension
-            if self.recurso.bigthumb != '':
-                response = requests.get(self.recurso.bigthumb)
-                img_data = response.content
-                img = ImageTk.PhotoImage(opp(BytesIO(img_data)))
-                self.vista.imagen.config(text="", image=img)
-                self.vista.imagen.image = img
+        info = ""
+        info += "■Título: " + self.recurso.title+"\n"
+        info += "■Duración: " + self.recurso.duration+"\n"
+        info += "■Autor: " + self.recurso.author+"\n"
+        info += "■Categoría: " + self.recurso.category+"\n"
+        info += "■Likes: " + str(self.recurso.likes)+"\n"
+        info += "■Dislikes: " + str(self.recurso.dislikes)+"\n"
+        mejor = self.recurso.getbest()
+        info += "■Mejor resolución: " + mejor.resolution+"\n"
+        info += "■Mejor formato: " + mejor.extension
+        if self.recurso.bigthumb != '':
+            response = requests.get(self.recurso.bigthumb)
+            img_data = response.content
+            img = ImageTk.PhotoImage(opp(BytesIO(img_data)))
+            self.vista.imagen.config(text="", image=img)
+            self.vista.imagen.image = img
 
-            self.vista.text.config(state=NORMAL)
-            self.vista.text.delete(1.0, END)
-            self.vista.text.insert(INSERT, info)
-            self.vista.text.config(state=DISABLED)
-            self.cargarLista()
-
-        except Exception as e:
-            mensaje = "La url es inválida o no se encuentra conectado "
-            mensaje += "a internet, intentelo nuevamente."
-            msg.showerror("Error", mensaje)
-
+        self.vista.text.config(state=NORMAL)
+        self.vista.text.delete(1.0, END)
+        self.vista.text.insert(INSERT, info)
+        self.vista.text.config(state=DISABLED)
+        self.cargarLista()
         self.vista.button.config(state=NORMAL)
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
@@ -238,3 +243,23 @@ class Controlador:
     def copia(self, event):
         """ Método que pega la url del portapapeles """
         self.vista.url.set(self.vista.clipboard_get())
+
+    def cargarPlayList(self):
+        self.vista.notebook.select(self.vista.tabPL)
+        self.disponibles = self.recurso['items']
+        self.vista.listPL.delete(0, END)
+        i = 0
+        texto_a_insertar = "{}) Título: {}, Duración: {}"
+        for s in self.disponibles:
+            i += 1
+            insertar = texto_a_insertar.format(i, s['pafy'].title[:50], s['pafy'].duration)
+            try:
+                self.vista.listPL.insert(END,insertar)
+            except TclError as e:
+                pass
+
+        self.vista.button.config(state=NORMAL)
+        self.vista.bvideo.config(state=NORMAL)
+        self.vista.baudio.config(state=NORMAL)
+        self.vista.bborrar.config(state=NORMAL)
+        self.vista.button.config(cursor="")
