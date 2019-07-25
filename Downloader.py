@@ -140,7 +140,8 @@ class Downloader(Tk):
         self.listPL.place(x=6,y=50)
         scrollbar.place(x=720,y=51, height=250)
         self.plbvideo = Button(self.tabPL, text="Ir a descargar video", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14))
+                             bg='#EC5656', font=("Arial", 14),
+                             command = self.controlador.cargarInfoDesdePL)
         self.plbvideo.place(x=30, y=320)
         
         self.plbbvideo = Button(self.tabPL, text="Descargar playlist video", fg='#eeeeee',

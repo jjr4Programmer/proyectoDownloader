@@ -22,7 +22,6 @@ import os
 import threading
 import platform
 
-
 class Controlador:
 
     def setVista(self, vista):
@@ -43,7 +42,7 @@ class Controlador:
             self.vista.button.config(cursor="wait")
 
         try:
-            self.recurso = pafy.get_playlist(self.vista.url.get())
+            self.recursoPL = pafy.get_playlist(self.vista.url.get())
             t = threading.Thread(target=self.cargarPlayList)
             t.start()
         except ValueError as e:
@@ -63,7 +62,13 @@ class Controlador:
         info += "■Título: " + self.recurso.title+"\n"
         info += "■Duración: " + self.recurso.duration+"\n"
         info += "■Autor: " + self.recurso.author+"\n"
-        info += "■Categoría: " + self.recurso.category+"\n"
+
+        try:
+            info += "■Categoría: " + self.recurso.category+"\n"
+        except:
+            info += "■Categoría: No disponible\n"
+            pass
+
         info += "■Likes: " + str(self.recurso.likes)+"\n"
         info += "■Dislikes: " + str(self.recurso.dislikes)+"\n"
         mejor = self.recurso.getbest()
@@ -85,7 +90,7 @@ class Controlador:
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
         self.vista.bborrar.config(state=NORMAL)
-        self.vista.button.config(cursor="")
+        self.vista.config(cursor="")
 
     def cargarLista(self):
         """
@@ -246,7 +251,7 @@ class Controlador:
 
     def cargarPlayList(self):
         self.vista.notebook.select(self.vista.tabPL)
-        self.disponibles = self.recurso['items']
+        self.disponibles = self.recursoPL['items']
         self.vista.listPL.delete(0, END)
         i = 0
         texto_a_insertar = "{}) Título: {}, Duración: {}"
@@ -263,3 +268,23 @@ class Controlador:
         self.vista.baudio.config(state=NORMAL)
         self.vista.bborrar.config(state=NORMAL)
         self.vista.button.config(cursor="")
+
+    def cargarInfoDesdePL(self):
+
+        index = self.vista.listPL.curselection()
+
+        if len(index) > 0:
+
+            if platform.system() == 'Windows':
+                self.vista.config(cursor="wait")
+
+            self.recurso = self.recursoPL['items'][index[0]]['pafy']
+            self.vista.button.config(state=DISABLED)
+            self.vista.bvideo.config(state=DISABLED)
+            self.vista.baudio.config(state=DISABLED)
+            self.vista.bborrar.config(state=DISABLED)
+            t = threading.Thread(target=self.cargarInfo)
+            t.start()
+
+        else:
+            msg.showerror("Error", "Se debe seleccionar un video de la lista.")
