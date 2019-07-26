@@ -7,10 +7,15 @@
     GUI del programa
 """
 
-# __author__=jjr4p
+# __author__ = jjr4p
 
-from tkinter import *
-from tkinter import ttk
+#widgets
+from tkinter import Tk, Label, Button, Entry, Text, Listbox, ttk, PhotoImage
+#variables
+from tkinter import  StringVar
+#constantes
+from tkinter import DISABLED, VERTICAL
+
 import os
 import platform
 
@@ -18,7 +23,7 @@ import platform
 class Downloader(Tk):
 
     def __init__(self, controlador, *args, **kwargs):
-        """ Constructo de la GUI """
+        """ Constructor de la GUI """
         Tk.__init__(self, *args, *kwargs)
         self.controlador = controlador
         self.controlador.vista = self
@@ -26,11 +31,12 @@ class Downloader(Tk):
         self.getScreenSize()
         geometry = "751x688+"
         geometry += str(int(self.ancho/2)-375) + "+"
-        geometry += str(int(self.alto/2)-345)
+        geometry += str(int(self.alto/2)-344)
         self.geometry(geometry)
         self.resizable(0, 0)
         self.title("Downloader")
         self.config(bg='#eeeeee')
+        self.iconbitmap('descarga.ico')
         self.iniciaComponentes()
 
     def iniciaComponentes(self):
@@ -47,8 +53,8 @@ class Downloader(Tk):
         self.tabPL = ttk.Frame(self.notebook, width=747, height=500)
 
         # Título
-        Label(self, text="Youtube Downloader", font=("Arial", 25),
-              bg='#eeeeee', fg='#EC5656').place(x=250, y=10)
+        Label(self, text="Downloader", font=("Arial", 25),
+              bg='#eeeeee', fg='#EC5656').place(x=300, y=10)
 
         #Cargar urls
         Label(self, text="Url:", font=("Arial", 14),
@@ -76,8 +82,8 @@ class Downloader(Tk):
         self.iniciaTabPL()
 
         # Agrega pestañas
-        self.notebook.add(self.tab1, text="Video")
-        self.notebook.add(self.tabPL, text="Playlist")
+        self.notebook.add(self.tab1, text="Video YT")
+        self.notebook.add(self.tabPL, text="Playlist YT")
         self.notebook.place(x=1, y=160)
 
         # Define el path en el directorio actual

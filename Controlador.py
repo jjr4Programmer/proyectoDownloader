@@ -38,22 +38,27 @@ class Controlador:
         self.vista.bvideo.config(state=DISABLED)
         self.vista.baudio.config(state=DISABLED)
         self.vista.bborrar.config(state=DISABLED)
-        if platform.system() == 'Windows':
-            self.vista.button.config(cursor="wait")
 
-        try:
-            self.recursoPL = pafy.get_playlist(self.vista.url.get())
-            t = threading.Thread(target=self.cargarPlayList)
+        if platform.system() == 'Windows':
+            self.vista.config(cursor="wait")
+
+        if "facebook" in self.vista.url.get():
+            t = threading.Thread(target=self.cargarFB)
             t.start()
-        except ValueError as e:
+        else:
             try:
-                self.recurso = pafy.new(self.vista.url.get())
-                t = threading.Thread(target=self.cargarInfo)
+                self.recursoPL = pafy.get_playlist(self.vista.url.get())
+                t = threading.Thread(target=self.cargarPlayList)
                 t.start()
             except ValueError as e:
-                mensaje = "La url es inválida o no se encuentra conectado "
-                mensaje += "a internet, intentelo nuevamente."
-                msg.showerror("Error", mensaje)
+                try:
+                    self.recurso = pafy.new(self.vista.url.get())
+                    t = threading.Thread(target=self.cargarInfo)
+                    t.start()
+                except ValueError as e:
+                    mensaje = "La url es inválida o no se encuentra conectado "
+                    mensaje += "a internet, intentelo nuevamente."
+                    msg.showerror("Error", mensaje)
 
     def cargarInfo(self):
         self.vista.notebook.select(self.vista.tab1)
@@ -211,7 +216,7 @@ class Controlador:
         self.label = Label(self.top, text="Descargando: ", font=("Arial", 13))
         self.label.place(x=5, y=15)
         self.label2 = Label(self.top, text="Tiempo: ", font=("Arial", 13))
-        self.label2.place(x=140, y=15)
+        self.label2.place(x=130, y=15)
         self.label3 = Label(self.top, text="Vel.: ", font=("Arial", 13))
         self.label3.place(x=260, y=15)
         self.progress = IntVar()
@@ -219,7 +224,7 @@ class Controlador:
         self.progressbar = ttk.Progressbar(self.top, variable=self.progress)
         self.progressbar.place(x=30, y=60, width=320)
         if platform.system() == 'Windows':
-            self.vista.button.config(cursor="wait")
+            self.vista.config(cursor="wait")
         self.top.transient(self.vista)
 
     def iniciar(self):
@@ -257,7 +262,7 @@ class Controlador:
         texto_a_insertar = "{}) Título: {}, Duración: {}"
         for s in self.disponibles:
             i += 1
-            insertar = texto_a_insertar.format(i, s['pafy'].title[:50], s['pafy'].duration)
+            insertar = texto_a_insertar.format(i, s['pafy'].title[:40]+"...", s['pafy'].duration)
             try:
                 self.vista.listPL.insert(END,insertar)
             except TclError as e:
@@ -267,7 +272,7 @@ class Controlador:
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
         self.vista.bborrar.config(state=NORMAL)
-        self.vista.button.config(cursor="")
+        self.vista.config(cursor="")
 
     def cargarInfoDesdePL(self):
 
@@ -288,3 +293,24 @@ class Controlador:
 
         else:
             msg.showerror("Error", "Se debe seleccionar un video de la lista.")
+
+    def cargarFB(self):
+
+        try:
+            rpta = msg.askyesno("Pregunta", "No se puede obtener información "+
+                "de un video de facebook, desea continuar con la descarga?")
+
+            if rpta:
+                path = filedialog.asksaveasfilename()
+                os.popen("facebook-dl.py {} hd {}".format(self.vista.url.get(),path))
+                msg.showinfo("Mensaje", "Archivo descargado correctamente.")
+                
+        except:
+            msg.showerror("Error", "El video no es público, o la url es inválida.")
+
+        self.vista.button.config(state=NORMAL)
+        self.vista.bvideo.config(state=NORMAL)
+        self.vista.baudio.config(state=NORMAL)
+        self.vista.bborrar.config(state=NORMAL)
+        self.vista.config(cursor="")
+        
