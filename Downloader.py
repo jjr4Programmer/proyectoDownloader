@@ -16,15 +16,18 @@ from tkinter import  StringVar
 #constantes
 from tkinter import DISABLED, VERTICAL
 
+from ttkthemes import ThemedTk
+
 import os
 import platform
 
 
-class Downloader(Tk):
+class Downloader(ThemedTk):
 
     def __init__(self, controlador, *args, **kwargs):
         """ Constructor de la GUI """
-        Tk.__init__(self, *args, *kwargs)
+        ThemedTk.__init__(self, *args, *kwargs)
+        
         self.controlador = controlador
         self.controlador.vista = self
         self.recurso = None
@@ -35,8 +38,9 @@ class Downloader(Tk):
         self.geometry(geometry)
         self.resizable(0, 0)
         self.title("Downloader")
-        self.config(bg='#eeeeee')
+        self.config(bg='white')
         self.iconbitmap('descarga.ico')
+        self.set_theme("arc")
         self.iniciaComponentes()
 
     def iniciaComponentes(self):
@@ -54,22 +58,20 @@ class Downloader(Tk):
 
         # Título
         Label(self, text="Downloader", font=("Arial", 25),
-              bg='#eeeeee', fg='#EC5656').place(x=300, y=10)
+               fg='#EC5656', bg='#FFFFFF').place(x=300, y=10)
 
         #Cargar urls
-        Label(self, text="Url:", font=("Arial", 14),
-              bg='#eeeeee').place(x=95, y=70)
-        self.entrada = Entry(self, textvariable=self.url, width=60,
-                             font=("Arial", 12), bg='#ABAAAA')
-        self.entrada.place(x=135, y=74)
+        ttk.Label(self, text="Url:", font=("Arial", 14)).place(x=95, y=70)
+        self.entrada = ttk.Entry(self, textvariable=self.url, width=60,
+                             font=("Arial", 12))
+        self.entrada.place(x=135, y=71)
         self.entrada.bind('<Double-Button-1>', self.controlador.copia)
-        Label(self, text="Carpeta:", font=("Arial", 14),
-              bg='#eeeeee').place(x=95, y=100)
-        Entry(self, textvariable=self.path, width=62,
-              font=("Arial", 11), bg='#ABAAAA').place(x=177, y=104)
+        ttk.Label(self, text="Carpeta:", font=("Arial", 14)).place(x=95, y=100)
+        ttk.Entry(self, textvariable=self.path, width=62,
+              font=("Arial", 11)).place(x=177, y=101)
         Button(self, text="...", command=self.controlador.cambiaPath,
-               fg='#eeeeee', bg='#EC5656', font=("Arial", 12, 'bold'),
-               width=2, height=1).place(x=685, y=100)
+               fg='#eeeeee', bg='#EC5656', font=("Arial", 8, 'bold'),
+               width=2, height=1).place(x=687, y=100)
         self.button = Button(self, text="Cargar url", fg='#eeeeee',
                              bg='#EC5656', font=("Arial", 13),
                              command=self.controlador.cargarurl)
@@ -91,37 +93,37 @@ class Downloader(Tk):
 
     def iniciaTab1(self):
         
-        Label(self.tab1, text="Info de la url:",
-              font=("Arial", 15),
-              bg='#eeeeee').place(x=10, y=30)
+        ttk.Label(self.tab1, text="Info de la url:",
+              font=("Arial", 15)).place(x=10, y=30)
         self.text = Text(self.tab1, width=39, height=9,
                          font=("Arial", 12), bg='#ABAAAA',
                          wrap='word')
         EventScrollBar = ttk.Scrollbar(
             self.tab1, command=self.text.yview,
             orient="vertical")
-        EventScrollBar.place(x=353, y=236-170, height=165)
+        EventScrollBar.place(x=353, y=65, height=165)
         self.text.configure(yscrollcommand=EventScrollBar.set)
         self.text.config(state=DISABLED)
         self.text.place(x=10, y=235-170)
-        Label(self.tab1, text="Imagen:", font=("Arial", 15),
-              bg='#eeeeee').place(x=400, y=30)
-        self.imagen = Label(self.tab1, text="No disponible",
-                            font=("Arial", 11), bg="#ABAAAA")
+        ttk.Label(self.tab1, text="Imagen:", font=("Arial", 15)
+              ).place(x=400, y=30)
+        self.imagen = ttk.Label(self.tab1, text="No disponible",
+                            font=("Arial", 11))
         self.imagen.place(x=400, y=60)
-        Label(self.tab1, text=" Formatos disponibles: ", font=("Arial", 15),
-              bg='#eeeeee').place(x=10, y=260)
+        ttk.Label(self.tab1, text=" Formatos disponibles: ", font=("Arial", 15)
+              ).place(x=10, y=260)
 
         self.listbox = Listbox(self.tab1, height=5, width=65,
                                font=("Arial", 13), bg='#ABAAAA')
         scrollbar = ttk.Scrollbar(self.tab1, orient=VERTICAL
           , command =self.listbox.yview )
-        scrollbar.place(x=660, y=290, height=110)
+        scrollbar.place(x=660, y=290, height=112)
         
         self.listbox.config(yscrollcommand=scrollbar.set)
         self.listbox.config(selectforeground="#eeeeee",
-                            selectbackground="#55aa00",
+                            selectbackground="#89C2DE",
                             selectborderwidth=1)
+
         self.listbox.place(x=85, y=290)
         self.bvideo = Button(self.tab1, text="Descargar video", fg='#eeeeee',
                              bg='#EC5656', font=("Arial", 14),
@@ -133,7 +135,7 @@ class Downloader(Tk):
         self.baudio.place(x=420, y=420)
 
     def iniciaTabPL(self):
-        Label(self.tabPL, text="Videos disponibles: ", 
+        ttk.Label(self.tabPL, text="Videos disponibles: ", 
           font=("Arial", 14)).place(x=5,y=10)
         self.listPL = Listbox(self.tabPL, height=10, width=66,
                                font=("Arial", 14), bg='#ABAAAA')
@@ -141,10 +143,10 @@ class Downloader(Tk):
                   command=self.listPL.yview, orient=VERTICAL)
         self.listPL.config(yscrollcommand=scrollbar.set)
         self.listPL.config(selectforeground="#eeeeee",
-                            selectbackground="#55aa00",
+                            selectbackground="#89C2DE",
                             selectborderwidth=1)
         self.listPL.place(x=6,y=50)
-        scrollbar.place(x=720,y=51, height=250)
+        scrollbar.place(x=723,y=50, height=254)
         self.plbvideo = Button(self.tabPL, text="Ir a descargar video", fg='#eeeeee',
                              bg='#EC5656', font=("Arial", 14),
                              command = self.controlador.cargarInfoDesdePL)
