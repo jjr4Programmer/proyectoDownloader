@@ -2,3 +2,4 @@ requests
 pillow >= 5.0.0
 pafy
 youtube_dl
+ttkthemes
