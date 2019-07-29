@@ -59,6 +59,12 @@ class Controlador:
                     mensaje = "La url es inválida o no se encuentra conectado "
                     mensaje += "a internet, intentelo nuevamente."
                     msg.showerror("Error", mensaje)
+                    self.vista.button.config(state=NORMAL)
+                    self.vista.bvideo.config(state=NORMAL)
+                    self.vista.baudio.config(state=NORMAL)
+                    self.vista.bborrar.config(state=NORMAL)
+                    self.vista.config(cursor="")
+
 
     def cargarInfo(self):
         self.vista.notebook.select(self.vista.tab1)
@@ -159,6 +165,7 @@ class Controlador:
         self.vista.button.config(state=NORMAL)
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
+        self.vista.config(cursor='')
 
     def descargaAudio(self):
         """
@@ -203,12 +210,14 @@ class Controlador:
         self.vista.button.config(state=NORMAL)
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
+        self.vista.config(cursor='')
 
     def mostrarDialogo(self):
         """ Método que muestra la GUI de descarga del archivo """
         self.top = Toplevel(self.vista)
         self.top.resizable(0, 0)
-        geometry = "400x100+"
+        self.top.iconbitmap('descarga.ico')
+        geometry = "400x150+"
         geometry += str(int(self.vista.ancho/2)-150)+"+"
         geometry += str(int(self.vista.alto/2)-50)
         self.top.geometry(geometry)
@@ -218,11 +227,13 @@ class Controlador:
         self.label2 = Label(self.top, text="Tiempo: ", font=("Arial", 13))
         self.label2.place(x=130, y=15)
         self.label3 = Label(self.top, text="Vel.: ", font=("Arial", 13))
-        self.label3.place(x=260, y=15)
+        self.label3.place(x=250, y=15)
         self.progress = IntVar()
         self.progress.set(0)
         self.progressbar = ttk.Progressbar(self.top, variable=self.progress)
         self.progressbar.place(x=30, y=60, width=320)
+        self.bcancelar = ttk.Button(self.top, text="Cancelar")
+        self.bcancelar.place(x=150, y= 100)
         if platform.system() == 'Windows':
             self.vista.config(cursor="wait")
         self.top.transient(self.vista)

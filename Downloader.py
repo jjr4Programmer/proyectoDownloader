@@ -57,8 +57,7 @@ class Downloader(ThemedTk):
         self.tabPL = ttk.Frame(self.notebook, width=747, height=500)
 
         # Título
-        Label(self, text="Downloader", font=("Arial", 25),
-               fg='#EC5656', bg='#FFFFFF').place(x=300, y=10)
+        ttk.Label(self, text="Downloader", font=("Arial", 25)).place(x=300, y=10)
 
         #Cargar urls
         ttk.Label(self, text="Url:", font=("Arial", 14)).place(x=95, y=70)
@@ -69,15 +68,12 @@ class Downloader(ThemedTk):
         ttk.Label(self, text="Carpeta:", font=("Arial", 14)).place(x=95, y=100)
         ttk.Entry(self, textvariable=self.path, width=62,
               font=("Arial", 11)).place(x=177, y=101)
-        Button(self, text="...", command=self.controlador.cambiaPath,
-               fg='#eeeeee', bg='#EC5656', font=("Arial", 8, 'bold'),
-               width=2, height=1).place(x=687, y=100)
-        self.button = Button(self, text="Cargar url", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 13),
+        ttk.Button(self, text="...", command=self.controlador.cambiaPath,
+                width=2).place(x=687, y=100)
+        self.button = ttk.Button(self, text="Cargar url",
                              command=self.controlador.cargarurl)
         self.button.place(x=270, y=140)
-        self.bborrar = Button(self, text="Borrar url", bg='#EC5656',
-                              fg='#eeeeee', font=("Arial", 13),
+        self.bborrar = ttk.Button(self, text="Borrar url",
                               command=self.controlador.borrarurl)
         self.bborrar.place(x=420, y=140)
         self.iniciaTab1()
@@ -117,7 +113,7 @@ class Downloader(ThemedTk):
                                font=("Arial", 13), bg='#ABAAAA')
         scrollbar = ttk.Scrollbar(self.tab1, orient=VERTICAL
           , command =self.listbox.yview )
-        scrollbar.place(x=660, y=290, height=112)
+        scrollbar.place(x=662, y=290, height=113)
         
         self.listbox.config(yscrollcommand=scrollbar.set)
         self.listbox.config(selectforeground="#eeeeee",
@@ -125,12 +121,10 @@ class Downloader(ThemedTk):
                             selectborderwidth=1)
 
         self.listbox.place(x=85, y=290)
-        self.bvideo = Button(self.tab1, text="Descargar video", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14),
+        self.bvideo = ttk.Button(self.tab1, text="Descargar video",
                              command=self.controlador.descargaVideo)
         self.bvideo.place(x=210, y=420)
-        self.baudio = Button(self.tab1, text="Descargar audio", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14),
+        self.baudio = ttk.Button(self.tab1, text="Descargar audio",
                              command=self.controlador.descargaAudio)
         self.baudio.place(x=420, y=420)
 
@@ -147,17 +141,14 @@ class Downloader(ThemedTk):
                             selectborderwidth=1)
         self.listPL.place(x=6,y=50)
         scrollbar.place(x=723,y=50, height=254)
-        self.plbvideo = Button(self.tabPL, text="Ir a descargar video", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14),
+        self.plbvideo = ttk.Button(self.tabPL, text="Ir a descargar video",
                              command = self.controlador.cargarInfoDesdePL)
         self.plbvideo.place(x=30, y=320)
         
-        self.plbbvideo = Button(self.tabPL, text="Descargar playlist video", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14))
+        self.plbbvideo = ttk.Button(self.tabPL, text="Descargar playlist video")
         self.plbbvideo.place(x=250, y=320)
 
-        self.plbbaudio = Button(self.tabPL, text="Descargar playlist audio", fg='#eeeeee',
-                             bg='#EC5656', font=("Arial", 14))
+        self.plbbaudio = ttk.Button(self.tabPL, text="Descargar playlist audio")
         self.plbbaudio.place(x=500, y=320)
 
     def setControlador(self, controlador):
