@@ -12,7 +12,7 @@
 from io import BytesIO
 from PIL import ImageTk
 from PIL.Image import open as opp
-from tkinter import *
+from tkinter import Toplevel, NORMAL, DISABLED, END, INSERT, TclError, IntVar
 from tkinter import messagebox as msg
 from tkinter import ttk
 from tkinter import filedialog
@@ -43,18 +43,18 @@ class Controlador:
             self.vista.config(cursor="wait")
 
         if "facebook" in self.vista.url.get():
-            t = threading.Thread(target=self.cargarFB)
-            t.start()
+            self.t = threading.Thread(target=self.cargarFB)
+            self.t.start()
         else:
             try:
                 self.recursoPL = pafy.get_playlist(self.vista.url.get())
-                t = threading.Thread(target=self.cargarPlayList)
-                t.start()
+                self.t = threading.Thread(target=self.cargarPlayList)
+                self.t.start()
             except ValueError as e:
                 try:
                     self.recurso = pafy.new(self.vista.url.get())
-                    t = threading.Thread(target=self.cargarInfo)
-                    t.start()
+                    self.t = threading.Thread(target=self.cargarInfo)
+                    self.t.start()
                 except ValueError as e:
                     mensaje = "La url es inválida o no se encuentra conectado "
                     mensaje += "a internet, intentelo nuevamente."
@@ -129,14 +129,14 @@ class Controlador:
         if len(index) > 0:
             self.seleccion = self.streams[index[0]]
             self.size = self.seleccion.get_filesize()
-
+            self.mostrarDialogo()
             t = threading.Thread(target=self.__descargarVideo)
             t.start()
 
             self.vista.button.config(state=DISABLED)
             self.vista.bvideo.config(state=DISABLED)
             self.vista.baudio.config(state=DISABLED)
-            self.mostrarDialogo()
+            self.vista.bborrar.config(state=DISABLED)
         else:
             msg.showerror("Error", "Se debe seleccionar un video de la lista.")
 
@@ -166,6 +166,8 @@ class Controlador:
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
         self.vista.config(cursor='')
+        self.vista.bborrar.config(state=NORMAL)
+        self.vista.config(cursor="")
 
     def descargaAudio(self):
         """
@@ -179,6 +181,7 @@ class Controlador:
             self.vista.button.config(state=DISABLED)
             self.vista.bvideo.config(state=DISABLED)
             self.vista.baudio.config(state=DISABLED)
+            self.vista.bborrar.config(state=DISABLED)
             self.mostrarDialogo()
 
     def __descargaAudio(self):
@@ -211,6 +214,8 @@ class Controlador:
         self.vista.bvideo.config(state=NORMAL)
         self.vista.baudio.config(state=NORMAL)
         self.vista.config(cursor='')
+        self.vista.bborrar.config(state=NORMAL)
+        self.vista.config(cursor="")
 
     def mostrarDialogo(self):
         """ Método que muestra la GUI de descarga del archivo """
@@ -218,6 +223,7 @@ class Controlador:
         self.top.resizable(0, 0)
         self.top.iconbitmap('descarga.ico')
         geometry = "400x150+"
+        geometry = "400x250+"
         geometry += str(int(self.vista.ancho/2)-150)+"+"
         geometry += str(int(self.vista.alto/2)-50)
         self.top.geometry(geometry)
@@ -234,13 +240,32 @@ class Controlador:
         self.progressbar.place(x=30, y=60, width=320)
         self.bcancelar = ttk.Button(self.top, text="Cancelar")
         self.bcancelar.place(x=150, y= 100)
+        self.top.iconbitmap('descarga.ico')
+        self.progress = IntVar()
+        self.progress.set(0)
+        self.progressbar = ttk.Progressbar(self.top, variable=self.progress)
+        self.label = ttk.Label(self.top, text="Descargando: ", font=("Arial", 14))
+        self.label.place(x=5, y=15)
+        self.label2 = ttk.Label(self.top, text="Tiempo restante: ", font=("Arial", 14))
+        self.label2.place(x=5, y=65)
+        self.label3 = ttk.Label(self.top, text="Velocidad: ", font=("Arial", 14))
+        self.label3.place(x=5, y=115)
+        
+        self.progressbar.place(x=30, y=160, width=320)
         if platform.system() == 'Windows':
             self.vista.config(cursor="wait")
+
+        self.bcancelar = ttk.Button(self.top, text="cancelar", command=self.cancelar)
+        self.bcancelar.place(x=150,y=200)
         self.top.transient(self.vista)
+        self.top.config(bg="#4C4C4D")
 
     def iniciar(self):
         """ Método que muestra la GUI """
         self.vista.mainloop()
+
+    def cancelar(self):
+        pass
 
     def borrarurl(self):
         """ Método borra la url ingresada """
@@ -252,8 +277,9 @@ class Controlador:
         self.progressbar.step(carga - self.progress.get())
         self.progress.set(carga)
         self.label.config(text="Descarga: "+str(carga)+" %")
-        self.label2.config(text="Tiempo: "+str("%.0f" % (eta))+" sec")
-        self.label3.config(text="Vel.: "+str("%.2f" % (rate))+" kbps")
+        self.label2.config(text="Tiempo restante: "+str("%.0f" % (eta))+" segundos")
+        self.label3.config(text="Velocidad: "+str("%.2f" % (rate/1024))+" Mb/s")
+        
 
     def cambiaPath(self):
         """ Método para cambiar la carpeta destino """
@@ -299,8 +325,8 @@ class Controlador:
             self.vista.bvideo.config(state=DISABLED)
             self.vista.baudio.config(state=DISABLED)
             self.vista.bborrar.config(state=DISABLED)
-            t = threading.Thread(target=self.cargarInfo)
-            t.start()
+            self.t = threading.Thread(target=self.cargarInfo)
+            self.t.start()
 
         else:
             msg.showerror("Error", "Se debe seleccionar un video de la lista.")

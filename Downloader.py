@@ -40,7 +40,8 @@ class Downloader(ThemedTk):
         self.title("Downloader")
         self.config(bg='white')
         self.iconbitmap('descarga.ico')
-        self.set_theme("arc")
+        self.set_theme("elegance")
+        self.config(bg='#4C4C4D')
         self.iniciaComponentes()
 
     def iniciaComponentes(self):
@@ -55,7 +56,10 @@ class Downloader(ThemedTk):
         self.notebook = ttk.Notebook(self)
         self.tab1 = ttk.Frame(self.notebook, width=747, height=500)
         self.tabPL = ttk.Frame(self.notebook, width=747, height=500)
-
+        self.style = ttk.Style()
+        self.style.configure('.', background="#4C4C4D")
+        self.style.configure('.', foreground="#000000")
+        self.style.configure('.',font="-family {Dejavu Sans} -size 14 -weight normal -slant roman -underline 0 -overstrike 0")
         # Título
         ttk.Label(self, text="Downloader", font=("Arial", 25)).place(x=300, y=10)
 
@@ -68,8 +72,11 @@ class Downloader(ThemedTk):
         ttk.Label(self, text="Carpeta:", font=("Arial", 14)).place(x=95, y=100)
         ttk.Entry(self, textvariable=self.path, width=62,
               font=("Arial", 11)).place(x=177, y=101)
+
         ttk.Button(self, text="...", command=self.controlador.cambiaPath,
                 width=2).place(x=687, y=100)
+
+        ttk.Button(self, text="...",width=1, command=self.controlador.cambiaPath).place(x=687, y=100)
         self.button = ttk.Button(self, text="Cargar url",
                              command=self.controlador.cargarurl)
         self.button.place(x=270, y=140)
@@ -97,7 +104,7 @@ class Downloader(ThemedTk):
         EventScrollBar = ttk.Scrollbar(
             self.tab1, command=self.text.yview,
             orient="vertical")
-        EventScrollBar.place(x=353, y=65, height=165)
+        EventScrollBar.place(x=365, y=65, height=166)
         self.text.configure(yscrollcommand=EventScrollBar.set)
         self.text.config(state=DISABLED)
         self.text.place(x=10, y=235-170)
@@ -113,7 +120,10 @@ class Downloader(ThemedTk):
                                font=("Arial", 13), bg='#ABAAAA')
         scrollbar = ttk.Scrollbar(self.tab1, orient=VERTICAL
           , command =self.listbox.yview )
+
         scrollbar.place(x=662, y=290, height=113)
+
+        scrollbar.place(x=660, y=290, height=114)
         
         self.listbox.config(yscrollcommand=scrollbar.set)
         self.listbox.config(selectforeground="#eeeeee",
