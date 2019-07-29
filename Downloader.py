@@ -40,7 +40,7 @@ class Downloader(ThemedTk):
         self.title("Downloader")
         self.config(bg='white')
         self.iconbitmap('descarga.ico')
-        self.set_theme("arc")
+        self.set_theme("elegance")
         self.config(bg='#4C4C4D')
         self.iniciaComponentes()
 
